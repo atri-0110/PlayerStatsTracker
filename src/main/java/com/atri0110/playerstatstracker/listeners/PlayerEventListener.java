@@ -9,6 +9,8 @@ import org.allaymc.api.eventbus.event.entity.EntityDieEvent;
 import org.allaymc.api.eventbus.event.player.PlayerChatEvent;
 import org.allaymc.api.eventbus.event.player.PlayerCommandEvent;
 import org.allaymc.api.eventbus.event.player.PlayerMoveEvent;
+import org.allaymc.api.eventbus.event.server.PlayerJoinEvent;
+import org.allaymc.api.eventbus.event.server.PlayerQuitEvent;
 import org.allaymc.api.math.location.Location3dc;
 
 import java.util.Map;
@@ -75,12 +77,16 @@ public class PlayerEventListener {
         lastPositions.put(playerId, current);
     }
     
-    public void recordLogin(UUID playerId) {
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        UUID playerId = event.getPlayer().getLoginData().getUuid();
         loginTimes.put(playerId, System.currentTimeMillis());
         dataManager.recordLogin(playerId);
     }
     
-    public void recordLogout(UUID playerId) {
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        UUID playerId = event.getPlayer().getLoginData().getUuid();
         Long loginTime = loginTimes.remove(playerId);
         if (loginTime != null) {
             long sessionMinutes = (System.currentTimeMillis() - loginTime) / (1000 * 60);
