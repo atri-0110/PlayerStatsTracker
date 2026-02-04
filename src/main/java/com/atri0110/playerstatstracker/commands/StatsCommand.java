@@ -30,9 +30,11 @@ public class StatsCommand extends Command {
     
     private void showStats(EntityPlayer player) {
         PlayerStats stats = dataManager.getPlayerStats(player.getUniqueId());
+
+        String playerName = getPlayerName(player.getUniqueId());
         
         player.sendMessage("§6=== Player Statistics ===");
-        player.sendMessage("§ePlayer: §f" + player.getDisplayName());
+        player.sendMessage("§ePlayer: §f" + playerName);
         player.sendMessage("");
         player.sendMessage("§bPlay Time: §f" + formatTime(stats.getPlayTimeMinutes().get()));
         player.sendMessage("§bBlocks Broken: §f" + stats.getBlocksBroken().get());
@@ -44,6 +46,22 @@ public class StatsCommand extends Command {
         player.sendMessage("§bCommands Used: §f" + stats.getCommandsUsed().get());
         player.sendMessage("");
         player.sendMessage("§6========================");
+    }
+
+    /**
+     * Gets player name by UUID, searching online players and falling back to UUID prefix.
+     */
+    private String getPlayerName(UUID uuid) {
+        final String[] name = {uuid.toString().substring(0, 8)};
+        Server.getInstance().getPlayerManager().forEachPlayer(player -> {
+            if (player.getLoginData().getUuid().equals(uuid)) {
+                EntityPlayer entityPlayer = player.getControlledEntity();
+                if (entityPlayer != null) {
+                    name[0] = entityPlayer.getDisplayName();
+                }
+            }
+        });
+        return name[0];
     }
     
     private String formatTime(long minutes) {

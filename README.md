@@ -35,8 +35,9 @@ PlayerStatsTracker tracks detailed player statistics across your server, providi
 - `kills` - Combined mob and player kills
 - `deaths` - Most deaths
 - `distance` - Furthest distance traveled
-- `crafted` - Most items crafted
 - `chat` - Most chat messages
+
+**Note**: Leaderboards show full names for online players only. Offline players are displayed by UUID prefix.
 
 ## Installation
 
